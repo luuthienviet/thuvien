@@ -9,7 +9,7 @@ export default function UsersManagement() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedUser, setSelectedUser] = useState(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
-  const apiOrigin = 'http://localhost:5000';
+  const apiOrigin = 'https://luuthienvietthuvien.vercel.app';
 
   useEffect(() => {
     fetchUsers();

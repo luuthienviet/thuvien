@@ -313,7 +313,7 @@ export default function Home() {
               <p className="font-medium">{error}</p>
               {error.includes('Backend') && (
                 <p className="text-sm mt-2">
-                  Hãy đảm bảo Backend đang chạy tại <code>http://localhost:5000</code>
+                  Hãy đảm bảo Backend đang chạy tại <code>https://luuthienvietthuvien.vercel.app</code>
                 </p>
               )}
             </div>
