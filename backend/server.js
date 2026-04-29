@@ -4,32 +4,48 @@ const cors = require('cors');
 const path = require('path');
 require('dotenv').config();
 
-const dns = require('dns');
-dns.setServers(['0.0.0.0', '8.8.8.8']);
-
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Debug middleware - log all incoming requests
 app.use((req, res, next) => {
-  console.log(`\n📨 [${new Date().toLocaleTimeString()}] ${req.method} ${req.path}`);
-  console.log('📍 Full URL:', req.originalUrl);
-  console.log('Headers:', Object.keys(req.headers).join(', '));
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.originalUrl}`);
   next();
 });
 
-// Database connection
-mongoose.connect(process.env.MONGODB_URI)
-  .then(() => console.log('✅ MongoDB connected successfully'))
-  .catch(err => {
-    console.error('❌ MongoDB connection error:', err);
-    process.exit(1);
-  });
+// Database connection (chỉ kết nối 1 lần, tránh tạo nhiều kết nối trên Vercel)
+let isConnected = false;
+
+const connectDB = async () => {
+  if (isConnected) return;
+
+  try {
+    await mongoose.connect(process.env.MONGODB_URI, {
+      serverSelectionTimeoutMS: 10000,
+      socketTimeoutMS: 45000,
+    });
+    isConnected = true;
+    console.log('✅ MongoDB connected successfully');
+  } catch (err) {
+    console.error('❌ MongoDB connection error:', err.message);
+    // Không dùng process.exit(1) trên Vercel
+  }
+};
+
+// Kết nối DB trước mỗi request
+app.use(async (req, res, next) => {
+  await connectDB();
+  next();
+});
 
 // Routes
 app.use('/api/auth', require('./routes/auth'));
@@ -42,19 +58,21 @@ app.get('/', (req, res) => {
   res.json({
     message: 'Library Management System API',
     version: '1.0.0',
+    status: 'running',
+    db: isConnected ? 'connected' : 'disconnected',
     endpoints: {
       auth: '/api/auth',
       books: '/api/books',
-      borrows: '/api/borrows'
+      borrows: '/api/borrows',
+      users: '/api/users'
     }
   });
 });
 
 // Error handler
 app.use((err, req, res, next) => {
-  console.error('❌ Error:', err);
+  console.error('❌ Error:', err.message);
 
-  // Multer errors
   if (err.message === 'Unexpected end of form') {
     return res.status(400).json({
       success: false,
@@ -87,19 +105,17 @@ app.use((err, req, res, next) => {
 app.use((req, res) => {
   res.status(404).json({
     success: false,
-    message: 'Route not found'
+    message: `Route ${req.originalUrl} không tồn tại`
   });
 });
 
-const PORT = process.env.PORT || 5000;
-
-// CHỈ SỬA TỪ ĐOẠN NÀY TRỞ XUỐNG: Bọc lại app.listen và export app
+// Chạy local (không cần thiết trên Vercel nhưng giữ để dev)
 if (process.env.NODE_ENV !== 'production') {
+  const PORT = process.env.PORT || 5000;
   app.listen(PORT, () => {
     console.log(`🚀 Server running on port ${PORT}`);
     console.log(`📍 Environment: ${process.env.NODE_ENV || 'development'}`);
   });
 }
 
-// Bắt buộc cho Vercel
 module.exports = app;
