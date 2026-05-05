@@ -369,7 +369,11 @@ export default function UsersManagement() {
                     <div className="mt-3">
                       <p className="text-sm text-gray-500 mb-2">Ảnh bill:</p>
                       <img
-                        src={`${apiOrigin}${selectedUser.subscription?.pendingBillImageUrl || selectedUser.subscription?.billImageUrl}`}
+                        src={(() => {
+                          const imgUrl = selectedUser.subscription?.pendingBillImageUrl || selectedUser.subscription?.billImageUrl;
+                          // Nếu URL đầy đủ (Cloudinary) thì dùng trực tiếp, nếu relative path (dữ liệu cũ) thì thêm apiOrigin
+                          return imgUrl.startsWith('http') ? imgUrl : `${apiOrigin}${imgUrl}`;
+                        })()}
                         alt="Bill thanh toán"
                         className="w-full max-h-72 object-contain rounded-lg border bg-white"
                       />

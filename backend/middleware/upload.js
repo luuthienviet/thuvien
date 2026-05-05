@@ -1,23 +1,7 @@
-const path = require('path');
-const fs = require('fs');
 const multer = require('multer');
 
-const uploadDir = path.join(__dirname, '..', 'uploads', 'payment-proofs');
-
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, uploadDir);
-  },
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname || '').toLowerCase();
-    const safeExt = ['.jpg', '.jpeg', '.png', '.webp'].includes(ext) ? ext : '.jpg';
-    cb(null, `bill-${req.user.id}-${Date.now()}${safeExt}`);
-  }
-});
+// Dùng memoryStorage thay vì diskStorage vì Vercel có hệ thống tập tin chỉ đọc (read-only)
+const storage = multer.memoryStorage();
 
 const fileFilter = (req, file, cb) => {
   if (!file) {
@@ -35,7 +19,7 @@ const uploadPaymentProof = multer({
   storage,
   fileFilter,
   limits: {
-    fileSize: 5 * 1024 * 1024
+    fileSize: 5 * 1024 * 1024 // 5MB
   }
 });
 

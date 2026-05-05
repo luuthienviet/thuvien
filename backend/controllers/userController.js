@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const { uploadFromBuffer } = require('../utils/cloudinary');
 
 const calculateSubscriptionEndDate = (startDate, planType) => {
   const endDate = new Date(startDate);
@@ -175,7 +176,11 @@ exports.submitPaymentProof = async (req, res) => {
     }
 
     const plan = SUBSCRIPTION_PLANS[planType];
-    const billImageUrl = `/uploads/payment-proofs/${req.file.filename}`;
+
+    // Upload ảnh lên Cloudinary thay vì lưu vào đĩa (Vercel read-only filesystem)
+    const publicId = `bill-${req.user.id}-${Date.now()}`;
+    const cloudResult = await uploadFromBuffer(req.file.buffer, 'payment-proofs', publicId);
+    const billImageUrl = cloudResult.url;
     const user = await User.findById(req.user.id).select('-password');
     if (!user) {
       return res.status(404).json({
