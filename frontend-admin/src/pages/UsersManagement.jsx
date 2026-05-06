@@ -436,25 +436,12 @@ export default function UsersManagement() {
             </div>{/* end scroll wrapper */}
 
             {/* Footer cố định ở đáy modal */}
-            <div className="flex justify-end space-x-4 px-6 py-4 border-t bg-white">
+            <div className="flex justify-end px-6 py-4 border-t bg-white">
               <button
                 onClick={() => setShowDetailModal(false)}
                 className="px-6 py-2 border rounded-lg hover:bg-gray-100"
               >
                 Đóng
-              </button>
-              <button
-                onClick={() => {
-                  handleToggleStatus(selectedUser._id, selectedUser.status);
-                  setShowDetailModal(false);
-                }}
-                className={`px-6 py-2 rounded-lg text-white ${
-                  selectedUser.status === 'active'
-                    ? 'bg-red-600 hover:bg-red-700'
-                    : 'bg-green-600 hover:bg-green-700'
-                }`}
-              >
-                {selectedUser.status === 'active' ? 'Khóa tài khoản' : 'Mở khóa tài khoản'}
               </button>
             </div>
           </div>
