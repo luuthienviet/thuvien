@@ -117,6 +117,8 @@ export default function UsersManagement() {
   };
 
   const getPlanLabel = (subscription = {}) => {
+    // Chỉ hiển thị tên gói khi bill đã được duyệt
+    if (subscription.paymentStatus !== 'approved') return 'Chưa chọn';
     const planType = subscription.planType || 'none';
     if (planType === 'monthly') return 'Gói Bình Thường';
     if (planType === 'yearly') return 'Gói Cao Cấp';
@@ -186,9 +188,7 @@ export default function UsersManagement() {
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Họ tên</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Số CCCD</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Số điện thoại</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Địa chỉ</th>
+
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Gói</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Thanh toán</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Trạng thái</th>
@@ -211,13 +211,7 @@ export default function UsersManagement() {
                       {user.cccd || '—'}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                    {user.email || '—'}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{user.phone}</td>
-                  <td className="px-6 py-4 text-sm text-gray-600 max-w-xs truncate" title={user.address}>
-                    {user.address}
-                  </td>
+
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                     {getPlanLabel(user.subscription)}
                   </td>
