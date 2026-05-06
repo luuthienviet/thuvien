@@ -92,19 +92,28 @@ export default function UsersManagement() {
     }
   };
 
-  const getPaymentStatusBadge = (subscription = {}) => {
+  const getPaymentStatusBadge = (subscription = {}, userId = null) => {
     const status = subscription.pendingPaymentStatus === 'pending_review'
       ? 'pending_review'
       : (subscription.paymentStatus || 'none');
     const config = {
       none: { label: 'Chưa gửi bill', className: 'bg-gray-100 text-gray-700' },
-      pending_review: { label: 'Chờ duyệt', className: 'bg-amber-100 text-amber-800' },
+      pending_review: { label: '📋 Chờ duyệt — Nhấn xem bill', className: 'bg-amber-100 text-amber-800 cursor-pointer hover:bg-amber-200 transition-colors' },
       approved: { label: 'Đã duyệt', className: 'bg-green-100 text-green-800' },
       rejected: { label: 'Từ chối', className: 'bg-red-100 text-red-800' }
     };
 
     const item = config[status] || config.none;
-    return <span className={`px-3 py-1 rounded-full text-xs font-medium ${item.className}`}>{item.label}</span>;
+    const isPending = status === 'pending_review';
+    return (
+      <span
+        className={`px-3 py-1 rounded-full text-xs font-medium ${item.className}`}
+        onClick={isPending && userId ? () => handleViewDetail(userId) : undefined}
+        title={isPending ? 'Nhấn để xem bill và duyệt' : ''}
+      >
+        {item.label}
+      </span>
+    );
   };
 
   const getPlanLabel = (subscription = {}) => {
@@ -213,7 +222,7 @@ export default function UsersManagement() {
                     {getPlanLabel(user.subscription)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    {getPaymentStatusBadge(user.subscription)}
+                    {getPaymentStatusBadge(user.subscription, user._id)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`px-3 py-1 rounded-full text-xs font-medium ${
