@@ -260,7 +260,7 @@ export default function UsersManagement() {
                       </button>
                       <button
                         onClick={() => handleToggleStatus(user._id, user.status)}
-                        className={`inline-flex items-center px-3 py-1 rounded-lg ${
+                        className={`inline-flex items-center justify-center w-[85px] px-3 py-1 rounded-lg ${
                           user.status === 'active'
                             ? 'text-red-600 hover:bg-red-50'
                             : 'text-green-600 hover:bg-green-50'
