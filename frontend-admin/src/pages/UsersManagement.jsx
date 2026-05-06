@@ -228,56 +228,58 @@ export default function UsersManagement() {
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <button
-                      onClick={() => handleViewDetail(user._id)}
-                      className="text-blue-600 hover:text-blue-900 mr-4"
-                      title="Xem chi tiết"
-                    >
-                      <Eye className="w-5 h-5 inline" />
-                    </button>
-                    {hasPendingPayment(user.subscription) && (
-                      <>
-                        <button
-                          onClick={() => handleApprovePayment(user._id)}
-                          disabled={processingPaymentId === user._id}
-                          className="inline-flex items-center px-3 py-1 rounded-lg text-green-600 hover:bg-green-50 mr-2 disabled:opacity-50"
-                          title="Duyệt bill"
-                        >
-                          <Check className="w-4 h-4 mr-1" />
-                          Duyệt
-                        </button>
-                        <button
-                          onClick={() => handleRejectPayment(user._id)}
-                          disabled={processingPaymentId === user._id}
-                          className="inline-flex items-center px-3 py-1 rounded-lg text-orange-600 hover:bg-orange-50 mr-2 disabled:opacity-50"
-                          title="Từ chối bill"
-                        >
-                          <X className="w-4 h-4 mr-1" />
-                          Từ chối
-                        </button>
-                      </>
-                    )}
-                    <button
-                      onClick={() => handleToggleStatus(user._id, user.status)}
-                      className={`inline-flex items-center px-3 py-1 rounded-lg ${
-                        user.status === 'active'
-                          ? 'text-red-600 hover:bg-red-50'
-                          : 'text-green-600 hover:bg-green-50'
-                      }`}
-                      title={user.status === 'active' ? 'Khóa tài khoản' : 'Mở khóa tài khoản'}
-                    >
-                      {user.status === 'active' ? (
+                    <div className="flex items-center justify-end gap-2">
+                      {hasPendingPayment(user.subscription) && (
                         <>
-                          <Ban className="w-4 h-4 mr-1" />
-                          Khóa
-                        </>
-                      ) : (
-                        <>
-                          <CheckCircle className="w-4 h-4 mr-1" />
-                          Mở khóa
+                          <button
+                            onClick={() => handleApprovePayment(user._id)}
+                            disabled={processingPaymentId === user._id}
+                            className="inline-flex items-center px-3 py-1 rounded-lg text-green-600 hover:bg-green-50 disabled:opacity-50"
+                            title="Duyệt bill"
+                          >
+                            <Check className="w-4 h-4 mr-1" />
+                            Duyệt
+                          </button>
+                          <button
+                            onClick={() => handleRejectPayment(user._id)}
+                            disabled={processingPaymentId === user._id}
+                            className="inline-flex items-center px-3 py-1 rounded-lg text-orange-600 hover:bg-orange-50 disabled:opacity-50"
+                            title="Từ chối bill"
+                          >
+                            <X className="w-4 h-4 mr-1" />
+                            Từ chối
+                          </button>
                         </>
                       )}
-                    </button>
+                      <button
+                        onClick={() => handleViewDetail(user._id)}
+                        className="text-blue-600 hover:text-blue-900 p-1"
+                        title="Xem chi tiết"
+                      >
+                        <Eye className="w-5 h-5" />
+                      </button>
+                      <button
+                        onClick={() => handleToggleStatus(user._id, user.status)}
+                        className={`inline-flex items-center px-3 py-1 rounded-lg ${
+                          user.status === 'active'
+                            ? 'text-red-600 hover:bg-red-50'
+                            : 'text-green-600 hover:bg-green-50'
+                        }`}
+                        title={user.status === 'active' ? 'Khóa tài khoản' : 'Mở khóa tài khoản'}
+                      >
+                        {user.status === 'active' ? (
+                          <>
+                            <Ban className="w-4 h-4 mr-1" />
+                            Khóa
+                          </>
+                        ) : (
+                          <>
+                            <CheckCircle className="w-4 h-4 mr-1" />
+                            Mở khóa
+                          </>
+                        )}
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
