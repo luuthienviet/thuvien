@@ -371,8 +371,8 @@ export default function UsersManagement() {
                       <img
                         src={(() => {
                           const imgUrl = selectedUser.subscription?.pendingBillImageUrl || selectedUser.subscription?.billImageUrl;
-                          // Nếu URL đầy đủ (Cloudinary) thì dùng trực tiếp, nếu relative path (dữ liệu cũ) thì thêm apiOrigin
-                          return imgUrl.startsWith('http') ? imgUrl : `${apiOrigin}${imgUrl}`;
+                          // base64 hoặc URL đầy đủ thì dùng trực tiếp, relative path (dữ liệu cũ) thì thêm apiOrigin
+                          return (imgUrl.startsWith('data:') || imgUrl.startsWith('http')) ? imgUrl : `${apiOrigin}${imgUrl}`;
                         })()}
                         alt="Bill thanh toán"
                         className="w-full max-h-72 object-contain rounded-lg border bg-white"
